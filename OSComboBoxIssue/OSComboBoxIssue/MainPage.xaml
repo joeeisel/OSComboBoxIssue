@@ -1,0 +1,49 @@
+﻿<sdk:Page
+    x:Class="OSComboBoxIssue.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+    xmlns:local="clr-namespace:OSComboBoxIssue"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <sdk:Page.Resources>
+        <DataTemplate x:Key="PhysicianTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                   HorizontalAlignment="Left"
+                   Text="{Binding PhysicianName}" />
+            </Grid>
+        </DataTemplate>
+    </sdk:Page.Resources>
+
+
+    <Grid Margin="0,50,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"                   
+                   HorizontalAlignment="Center">The ViewModel sets SelectedItem to the second instance of items in the ItemsSource, yet the first is selected.  Look in the console window to see that the SelectedPhysician is reset to 1 after we've set it to 2 in the ViewModel's constructor</TextBlock>
+        <!--In the original code, these are both included after SelectedItem, but they make no difference for this issue.
+        SelectedValue="{Binding OvrAttendingPhysicianKey, Converter={StaticResource ComboBoxItemNullConverter}, Mode=TwoWay, NotifyOnValidationError=True}"
+        SelectedValuePath="PhysicianKey"-->
+        <!--We're also using our own ComboBox, but I 've tried with the standard ComboBox and it has the same issue.-->
+        
+        <!--It's almost like the TwoWay binding on SelectedItem is getting pushed back to the ViewModel when OpenSilver creates it.  That shouldn't happen and does not happen in Silverlight.
+            Values would only push from UI to Source if the UI was changed after it was created by the end user.-->
+        <ComboBox Grid.Row="1"
+                  MaxWidth="350"
+                  Margin="0,50,0,0"
+                  ItemTemplate="{StaticResource PhysicianTemplate}"
+                  ItemsSource="{Binding PhysicianList}"
+                  SelectedItem="{Binding SelectedPhysician, Mode=TwoWay}"                            
+                  HorizontalAlignment="Center"></ComboBox>
+    </Grid>
+</sdk:Page>
